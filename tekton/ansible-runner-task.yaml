@@ -20,7 +20,7 @@ spec:
           value: generate-spoke-resources.yaml
         - name: PROJECT_DIR
           value: "$(workspaces.source.path)/project"
-      volumes:
+      volumeMounts:
         - name: extravars
           mountPath: "$(workspaces.source.path)/env"
       args:

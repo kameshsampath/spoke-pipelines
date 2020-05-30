@@ -7,10 +7,7 @@
 - name: Set Extra facts
   set_fact:
     spoke_out_base_dir: "out"
-    spoke_out_dir: "out/{{cloud}}/{{ vars[cloud]['cluster_name'] }}"
-    cluster_name: "{{ vars[cloud]['cluster_name'] }}"
-    cloud_region: "{{ vars[cloud]['cloud_region'] }}"
-    base_domain: "{{ vars[cloud]['base_domain'] }}"
+    spoke_out_dir: "out/{{cloud}}/{{cluster_name}}"
 
 - name: "Create Spoke output directory"
   file:

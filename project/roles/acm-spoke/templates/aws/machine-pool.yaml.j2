@@ -1,20 +1,20 @@
+#jinja2: lstrip_blocks: "True"
 apiVersion: hive.openshift.io/v1
 kind: MachinePool
 metadata:
-  name: {cluster_name}-worker
+  name: "{{cluster_name}}-worker"
 spec:
   clusterDeploymentRef:
-    name: {cluster_name}
+    name: "{{cluster_name }}"
   name: worker
   platform:
-   {%if cloud=='aws' %}
     aws:
-      type: "m4.xlarge"
-    {%elif  cloud=='aws' %}
-    gcp:
-      type: "e2-standard-8"
-    {%elif  cloud=='aws' %}
-    gcp:
-      type: "Standard_D8s_v3"
-    {% endif %}
-  replicas: 3
+      {%if worker_instance_size is defined %}
+      type: "{{worker_instance_size}}"
+      {% endif %}
+      zone:
+      {% for zone in zones %}
+      - {{ zone }}
+      {% endfor %}
+      {% endif %}
+  replicas: "{{worker_replicas}}"

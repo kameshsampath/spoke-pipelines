@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: list-dir
+spec:
+  workspaces:
+    - name: dir
+  steps:
+    - name: list-directory
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |-
+        #!/bin/sh
+        ls -ltr $(workspaces.dir.path)

@@ -3,14 +3,15 @@ kind: Task
 metadata:
   name: ansible-runner
 spec:
-  params:
-    - name: cloud
-      description: The cloud to provision the spoke into
-    - name: spoke-configmap
-      description: The ConfigMap with values of extravars that need to be used
   workspaces:
     - name: source
+    - name: extravars
   steps:
+    - name: copy-extravars
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |-
+        #!/bin/sh
+        cp -av $(workspaces.extravars.path)/extravars $(workspaces.source.path)/env/extravars
     - name: gen-spoke-resources
       image: docker.io/ansible/ansible-runner:latest
       command:
@@ -20,15 +21,8 @@ spec:
           value: generate-spoke-resources.yaml
         - name: PROJECT_DIR
           value: "$(workspaces.source.path)/project"
-      volumeMounts:
-        - name: extravars
-          mountPath: "$(workspaces.source.path)/env"
       args:
         - -p
         - generate-spoke-resources.yaml
         - run
         - "$(workspaces.source.path)"
-  volumes:
-    - name: extravars
-      configMap:
-        name: "$(params.spoke-configmap)"

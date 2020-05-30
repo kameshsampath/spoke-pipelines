@@ -1,29 +1,26 @@
+#jinja2: lstrip_blocks: "True"
 apiVersion: v1
 metadata:
-  name: <CLUSTER_NAME>
-baseDomain: <BASE_DOMAIN>
+  name: "{{cluster_name}}"
+baseDomain: "{{base_domain}}"
 controlPlane:
   hyperthreading: Enabled
   name: master
   replicas: 3
   platform:
-    aws:
-      rootVolume:
-        iops: 4000
-        size: 500
-        type: io1
-      type: m4.xlarge
+    azure:
+      {% if master_instance_size is defined %}   
+      type: "{{master_instance_size}}"
+      {% endif %}
 compute:
 - hyperthreading: Enabled
   name: worker
-  replicas: 3
+  replicas: "{{worker_replicas}}"
   platform:
-    aws:
-      rootVolume:
-        iops: 2000
-        size: 500
-        type: io1
-      type: m4.xlarge
+    azure:      
+      {% if worker_instance_size is defined %}
+      type: "{{ worker_instance_size }}"
+      {% endif %}
 networking:
   clusterNetwork:
   - cidr: 10.128.0.0/14
@@ -34,5 +31,6 @@ networking:
   - 172.30.0.0/16
 platform:
   aws:
-    region: <CLOUD_REGION>
+    baseDomainResourceGroupName: {{azure_domain_resource_group}}
+    region: "{{cloud_region}}"
 pullSecret: "" # skip, hive will inject based on it's secrets

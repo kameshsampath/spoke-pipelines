@@ -47,7 +47,7 @@
 # machine pool config
 - name: "Create Machine Pool"
   template:
-    src: "{cloud}}/machine-pool.yaml.j2"
+    src: "{{cloud}}/machine-pool.yaml.j2"
     dest: "{{spoke_out_dir}}/machine-pool.yaml"
 
 # install-config.yaml

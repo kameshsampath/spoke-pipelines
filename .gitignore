@@ -25,3 +25,4 @@ artifacts/**
 inventory/**
 !inventory/hostsdocs.old
 .cache
+project/out/*

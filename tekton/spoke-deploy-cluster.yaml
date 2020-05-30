@@ -6,10 +6,9 @@ spec:
   params:
     - name: git-url
     - name: git-revision
-    - name: cloud
-    - name: spoke-configmap
   workspaces:
     - name: git-source
+    - name: extra-vars
   tasks:
     - name: fetch-from-git
       taskRef:
@@ -19,17 +18,19 @@ spec:
           value: $(params.git-url)
         - name: revision
           value: $(params.git-revision)
+        # TODO move as parameter
+        - name: deleteExisting
+          value: "true"
       workspaces:
         - name: output
           workspace: git-source
     - name: generate-spoke-resources
       taskRef:
         name: ansible-runner
-      params:
-        - name: cloud
-          value: $(params.cloud)
-        - name: spoke-configmap
-          value: $(params.spoke-configmap)
+      runAfter:
+        - fetch-from-git
       workspaces:
         - name: source
           workspace: git-source
+        - name: extravars
+          workspace: extra-vars

@@ -3,11 +3,13 @@ kind: Task
 metadata:
   name: ansible-runner
 spec:
-  resources:
-    inputs:
-      resources:
-        - name: source
-          type: git
+  params:
+    - name: cloud
+      description: The cloud to provision the spoke into
+    - name: spoke-configmap
+      description: The ConfigMap with values of extravars that need to be used
+  workspaces:
+    - name: source
   steps:
     - name: gen-spoke-resources
       image: docker.io/ansible/ansible-runner:latest
@@ -17,5 +19,16 @@ spec:
         - name: RUNNER_PLAYBOOK
           value: generate-spoke-resources.yaml
         - name: PROJECT_DIR
-          value: "/workspace/source/project"
-      args: ["-p", "generate-spoke-resources.yaml", "run"]
+          value: "$(workspaces.source.path)/project"
+      volumes:
+        - name: extravars
+          mountPath: "$(workspaces.source.path)/env"
+      args:
+        - -p
+        - generate-spoke-resources.yaml
+        - run
+        - "$(workspaces.source.path)"
+  volumes:
+    - name: extravars
+      configMap:
+        name: "$(params.spoke-configmap)"

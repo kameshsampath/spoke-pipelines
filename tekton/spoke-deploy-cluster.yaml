@@ -1,0 +1,35 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: spoke-deploy-cluster
+spec:
+  params:
+    - name: git-url
+    - name: git-revision
+    - name: cloud
+    - name: spoke-configmap
+  workspaces:
+    - name: git-source
+  tasks:
+    - name: fetch-from-git
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.git-url)
+        - name: revision
+          value: $(params.git-revision)
+      workspaces:
+        - name: output
+          workspace: git-source
+    - name: generate-spoke-resources
+      taskRef:
+        name: ansible-runner
+      params:
+        - name: cloud
+          value: $(params.cloud)
+        - name: spoke-configmap
+          value: $(params.spoke-configmap)
+      workspaces:
+        - name: source
+          workspace: git-source

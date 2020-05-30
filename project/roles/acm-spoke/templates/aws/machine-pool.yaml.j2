@@ -1,0 +1,20 @@
+apiVersion: hive.openshift.io/v1
+kind: MachinePool
+metadata:
+  name: {cluster_name}-worker
+spec:
+  clusterDeploymentRef:
+    name: {cluster_name}
+  name: worker
+  platform:
+   {%if cloud=='aws' %}
+    aws:
+      type: "m4.xlarge"
+    {%elif  cloud=='aws' %}
+    gcp:
+      type: "e2-standard-8"
+    {%elif  cloud=='aws' %}
+    gcp:
+      type: "Standard_D8s_v3"
+    {% endif %}
+  replicas: 3

@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: ansible-runner
+spec:
+  resources:
+    inputs:
+      resources:
+        - name: source
+          type: git
+  steps:
+    - name: gen-spoke-resources
+      image: docker.io/ansible/ansible-runner:latest
+      command:
+        - ansible-runner
+      env:
+        - name: RUNNER_PLAYBOOK
+          value: generate-spoke-resources.yaml
+        - name: PROJECT_DIR
+          value: "/workspace/source/project"
+      args: ["-p", "generate-spoke-resources.yaml", "run"]

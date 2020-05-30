@@ -1,0 +1,93 @@
+---
+- name: "Spoke Cloud"
+  debug:
+    msg: "{{cloud}}"
+
+# Destination directory
+- name: Set Extra facts
+  set_fact:
+    spoke_out_base_dir: "/runner/project/out"
+    spoke_out_dir: "/runner/project/out/{{cloud}}/{{ vars[cloud]['cluster_name'] }}"
+    cluster_name: "{{ vars[cloud]['cluster_name'] }}"
+    cloud_region: "{{ vars[cloud]['cloud_region'] }}"
+    base_domain: "{{ vars[cloud]['base_domain'] }}"
+
+- name: "Create Spoke output directory"
+  file:
+    path: "{{spoke_out_dir}}"
+    state: directory
+    mode: "0755"
+
+- name: "Spoke out dir"
+  debug:
+    msg: "{{spoke_out_dir}}"
+
+- name: "Spoke Cluster Name"
+  debug:
+    msg: "{{cluster_name}}"
+
+- name: "Spoke Cloud Region"
+  debug:
+    msg: "{{cloud_region}}"
+
+- name: "Spoke Base Domain"
+  debug:
+    msg: "{{base_domain}}"
+
+# generate ssh-privatekey
+- name: "Generate SSH Key"
+  openssh_keypair:
+    path: "{{spoke_out_dir}}/ssh-privatekey"
+
+#TODO: create credentialsSecretRef secret
+
+# namespace
+- name: "Create Spoke Namespace"
+  template:
+    src: "namespace.yaml.j2"
+    dest: "{{spoke_out_dir}}/namespace.yaml"
+
+# machine pool config
+- name: "Create Machine Pool"
+  template:
+    src: "{cloud}}/machine-pool.yaml.j2"
+    dest: "{{spoke_out_dir}}/machine-pool.yaml"
+
+# install-config.yaml
+- name: "Create Install Config"
+  template:
+    src: "{{cloud}}/install-config.yaml.j2"
+    dest: "{{spoke_out_dir}}/install-config.yaml"
+
+# imageset
+- name: "Create Imageset"
+  template:
+    src: "imageset.yaml.j2"
+    dest: "{{spoke_out_dir}}/imageset.yaml"
+
+# endpoint-config
+- name: "Create Endpoint Config"
+  template:
+    src: "endpoint-config.yaml.j2"
+    dest: "{{spoke_out_dir}}/endpoint-config.yaml"
+
+# cluster-deployment
+
+- name: "Create Cluster Deployment"
+  template:
+    src: "cluster-deployment.yaml.j2"
+    dest: "{{spoke_out_dir}}/cluster-deployment.yaml"
+
+#  cluster
+
+- name: "Create Cluster"
+  template:
+    src: "cluster.yaml.j2"
+    dest: "{{spoke_out_dir}}/cluster.yaml"
+
+# kustomization
+
+- name: "Create kustomization"
+  template:
+    src: "kustomization.yaml.j2"
+    dest: "{{spoke_out_dir}}/kustomization.yaml"

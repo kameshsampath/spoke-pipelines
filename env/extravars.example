@@ -1,0 +1,39 @@
+---
+ansible_become: no 
+ansible_connection: local
+
+# Recommended to put this file inside vault 
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_vault.html
+
+# Hybrid Clouds where the resources will be provisioned
+# Currently only Google Cloud(gcp), Amazon(aws), and Azure(azr) are supported
+# cloud:
+
+####################################################################################
+#
+# Google Cloud Variables
+# https://docs.ansible.com/ansible/latest/scenario_guides/guide_gce.html
+####################################################################################
+gcp:
+  project_id: "<your-gcp-project-id>"
+  cloud_region: "asia-south1"
+  zones: 
+    - "asia-south1-b"  
+
+####################################################################################
+#
+# Amazon Variables
+# https://docs.ansible.com/ansible/latest/scenario_guides/guide_aws.html
+#
+####################################################################################
+aws:
+  cloud_region: "ap-south-1"  
+
+
+##########################################################################################################
+#
+# Azure 
+###########################################################################################################
+azr:
+  # https://azure.microsoft.com/en-in/global-infrastructure/regions/
+  cloud_region: "southindia"

@@ -20,26 +20,23 @@ secretGenerator:
 - name: aws-creds
   type: "Opaque"
   literals:
-    - aws_access_key_id=<AWS_ACCESS_KEY>
-    - aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>
-{% elif cloud == 'gcp' %}
-- name: gcp-creds
-  type: "Opaque"
-  literals:
-    - aws_access_key_id=<AWS_ACCESS_KEY>
-    - aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>
+    - aws_access_key_id={{aws_access_key_id}}
+    - aws_secret_access_key={{aws_secret_access_key}}
 {% elif cloud == 'azr' %}
 - name: azr-creds
   type: "Opaque"
   literals:
-    - aws_access_key_id=<AWS_ACCESS_KEY>
-    - aws_secret_access_key=<AWS_SECRET_ACCESS_KEY>
+    - osServicePrincipal.json={{azr_serviceprincipal_json}}
+{% elif cloud == 'gcp' %}
+- name: gcp-creds
+  type: "Opaque"
+  literals:
+    - osServiceAccount.json={{gcp_serviceaccount_json}}
 {% endif %}
 - name: openshift-installer-pull-secret
   type: "kubernetes.io/dockerconfigjson"
   literals:
-    - .dockerconfigjson='<OCP_PULL_SECRET>'
-
+    - .dockerconfigjson='{{ocp_pull_secet}}'
 resources:
   - namespace.yaml
   - machine-pool.yaml

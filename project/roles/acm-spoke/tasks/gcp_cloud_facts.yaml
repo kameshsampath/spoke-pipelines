@@ -1,0 +1,8 @@
+---
+- name: Get GCP Secrets
+  set_fact:
+    gcp_secrets: "{{ lookup('k8s', api_version='v1',kind='Secret',namespace=cloud_credentials_secret.namespace,resource_name=cloud_credentials_secret.name) }}"
+
+- name: debug
+  debug:
+    msg: "{{gcp_secrets}}"

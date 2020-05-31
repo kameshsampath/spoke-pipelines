@@ -1,0 +1,77 @@
+= Spoke Pipelines
+The Pipeline for Deploying ACM Spokes using Tektoncd
+
+== Pre-requsites
+
+Configure your cloud accounts as detailed in the following docs:
+
+* https://docs.openshift.com/container-platform/4.4/installing/installing_aws/installing-aws-account.html[Amazon]
+
+* https://docs.openshift.com/container-platform/4.4/installing/installing_azure/installing-azure-account.html#installing-azure-account[Azure]
+
+* https://docs.openshift.com/container-platform/4.4/installing/installing_gcp/installing-gcp-account.html[Google]
+
+=== Create Cloud Secrets
+
+[NOTE]
+=====
+The following section is one time setup, the resources will be reused in all the spoke cluster deployments.
+=====
+
+Create the Cloud credentials secret that will be used by the spoke dpeloyment:
+
+==== Amazon
+
+Create a secret with the following keys and its value corresponding to you Amazon account
+
+* aws_access_key_id
+* aws_secret_access_key
+
+(e.g.)
+[source,bash]
+----
+oc create secret generic -n demos my-aws-creds \
+  --from-literal=aws_access_key_id=<your aws acces key> \
+  --from-literal=aws_secret_access_key=<your aws secret key>
+----
+
+==== Azure
+
+Create a secret with the following keys and its value corresponding to you Azure account
+
+* baseDomainresourceGroup
+* osServicePrincipal.json
+
+(e.g.)
+[source,bash]
+----
+oc create secret generic -n demos my-azr-creds \
+  --from-file=osServicePrincipal.json=<the Service Principal json file> \
+  --from-literal=baseDomainresourceGroup=<your base domain resource group>
+----
+
+==== Google
+
+Create a secret with the following keys and its value corresponding to you Google account
+
+* project_id
+* osServiceAccount.json
+
+(e.g.)
+[source,bash]
+----
+oc create secret generic -n demos my-gcp-creds \
+  --from-file=osServiceAccount.json=<the gcp serviceaccount json file> \
+  --from-literal=project_id=<your gcp project id to be used>
+----
+
+=== Create OpenShift Pull Secret secret
+
+Create a secret to hold the OpenShift pull secret, if you dont have pull scret try getting one from https://try.openshfit.com[try.openshift.com]. The secret should have key called `pullSecret` with the contents from your pull secret file:
+
+e.g.
+[source,bash]
+----
+oc create secret generic -n demos ocp-pull-secret \
+  --from-file=pullSecret=< your openshift pull secret file> 
+----

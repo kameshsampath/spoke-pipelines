@@ -13,3 +13,13 @@ cluster_name:
 cloud_region: "asia-south1"
 zones: 
   - "asia-south1-b"  
+# The Kubernetes Cloud Credentials secret to be used with the respective cloud
+cloud_credentials_secret:
+  # if no namespace, the current namespace is assumed
+  namespace: <the namespace of the secret>
+  name: <the name of the secret>
+# The OpenShift pull secret secret
+openshift_pull_secret:
+  # if no namespace, the current namespace is assumed
+  namespace: <the namespace of the secret>
+  name: <the name of the secret>

@@ -31,6 +31,19 @@
   debug:
     msg: "{{base_domain}}"
 
+# Set  Cloud Facts
+- name: AWS Cloud Facts
+  include: aws_cloud_facts.yaml
+  when: cloud == 'aws'
+
+- name: Azure Cloud Facts
+  include: azr_cloud_facts.yaml
+  when: cloud == 'azr'
+
+- name: GCP Cloud Facts
+  include: gcp_cloud_facts.yaml
+  when: cloud == 'gcp'
+
 # generate ssh-privatekey
 - name: "Generate SSH Key"
   openssh_keypair:

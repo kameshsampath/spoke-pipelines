@@ -44,12 +44,13 @@
   include: gcp_cloud_facts.yaml
   when: cloud == 'gcp'
 
+- name: OpenShift Pull Secret Fact
+  include: ocp_pull_secret_fact.yaml
+
 # generate ssh-privatekey
 - name: "Generate SSH Key"
   openssh_keypair:
     path: "{{spoke_out_dir}}/ssh-privatekey"
-
-#TODO: create credentialsSecretRef secret
 
 # namespace
 - name: "Create Spoke Namespace"

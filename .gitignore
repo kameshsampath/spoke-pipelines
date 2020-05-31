@@ -21,7 +21,7 @@ project/.ansible
 out/**
 !out/.gitkeep
 project/artifacts/**
-!artifacts/.gitkeep
+!project/artifacts/.gitkeep
 inventory/**
 !inventory/hostsdocs.old
 .cache

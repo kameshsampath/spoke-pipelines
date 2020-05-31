@@ -3,6 +3,13 @@
   set_fact:
     gcp_secrets: "{{ lookup('k8s', api_version='v1',kind='Secret',namespace=cloud_credentials_secret.namespace,resource_name=cloud_credentials_secret.name) }}"
 
-- name: debug
-  debug:
-    msg: "{{gcp_secrets}}"
+- name: Set GCP Project ID
+  set_fact:
+    gcp_project_id: "{{gcp_secrets.data.project_id | b64decode}}"
+
+- name: Create GCP Service Account Json
+  copy:
+    dest: "{{spoke_out_dir}}/.osServiceAccount.json"
+    content: "{{gcp_secrets.data['osServiceAccount.json'] | b64decode}}"
+    group: '0'
+    mode: g+w

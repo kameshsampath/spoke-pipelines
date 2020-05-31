@@ -1,1 +1,15 @@
 ---
+- name: Get Azure Secrets
+  set_fact:
+    azr_secrets: "{{ lookup('k8s', api_version='v1',kind='Secret',namespace=cloud_credentials_secret.namespace,resource_name=cloud_credentials_secret.name) }}"
+
+- name: Set Azure Resource Group
+  set_fact:
+    azure_domain_resource_group: "{{azr_secrets.data.baseDomainresourceGroup | b64decode}}"
+
+- name: Create Azure Service Principal Json
+  copy:
+    dest: "{{spoke_out_dir}}/.osServicePrincipal.json"
+    content: "{{azr_secrets.data['osServicePrincipal.json'] | b64decode}}"
+    group: '0'
+    mode: g+w

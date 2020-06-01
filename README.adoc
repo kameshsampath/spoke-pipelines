@@ -75,3 +75,25 @@ e.g.
 oc create secret generic -n demos ocp-pull-secret \
   --from-file=pullSecret=< your openshift pull secret file> 
 ----
+
+=== Pipelines
+
+The spoke provisioning is done using Tekton Pipelines.
+
+==== Create Pipelines Project
+
+All the pipelines and its related resources will be deployed in project 
+
+==== Create extravars secret
+
+The link:./env/extravars.example[extravars] is used to configre settings for the cloud that will be used during provisioning. You need to create one secret per cloud which could later be used with pipelines.
+
+The following example shows how to create one for Google Cloud:
+
+[source,bash]
+----
+oc create secret generic
+----
+
+
+==== Create Workspace

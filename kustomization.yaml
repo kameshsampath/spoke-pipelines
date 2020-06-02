@@ -1,0 +1,9 @@
+namespace: demos
+secretGenerator:
+  - name: extravars
+    files:
+      - env/extravars
+resources:
+  - tekton/workspace.yaml
+  - tekton/ansible-runner-task.yaml
+  - tekton/spoke-deploy-cluster.yaml

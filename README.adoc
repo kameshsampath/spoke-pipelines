@@ -82,48 +82,27 @@ The spoke provisioning is done using Tekton Pipelines.
 
 ==== Create Pipelines Project
 
-All the pipelines and its related resources will be deployed in project 
-
-==== Create extravars secret
-
-The link:./env/extravars.example[extravars] is used to configre settings for the cloud that will be used during provisioning. You need to create one secret per cloud which could later be used with pipelines.
-
-The following example shows how to create one for Google Cloud:
+All the pipelines and its related resources will be deployed in this project, run
 
 [source,bash]
 ----
-oc create secret -n demos generic \
-  extravars-gcp \
-  --from-file=extravars=$PROJECT_HOME/env/extravars
+kubectl create namespace <your-namespace>
 ----
 
-==== Create Workspace
+[IMPORTANT]
+====
+Update the kustomization.yaml **namespace** to match your namespace
+====
 
-The https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md[Tekton workspace] are shared across with each task.
+==== Create PVC, Tasks, Pipelines and Cloud extravars secret
+
+The link:./env/extravars.example[extravars] is used to configre settings for the cloud that will be used during provisioning. Run the following command to create the PVC, Tasks, Pipelines.
+
+IMPORTANT: Please make the note of the name of the secret generated as it will be needed during the Pipeline run command later.
 
 [source,bash]
 ----
-oc apply -n demos -f tekton/workspace.yaml
-----
-
-==== Create Tasks
-
-The following tekton tasks are used in this demo:
-
-[source,bash]
-----
-oc apply -n demos \
-  -f tekton/ansible-runner-task.yaml
-----
-
-==== Create Tekton Pipeline 
-
-Create the Tekton Pipeline that will apply GitOps to create the clusters:
-
-[source,bash]
-----
-oc apply -n demos \
-  -f tekton/spoke-deploy-cluster.yaml
+oc apply --kustomize $PWD
 ----
 
 ==== Run the sample pipeline
@@ -132,8 +111,12 @@ Run the following sample pipeline to deploy the cluster to Google Cloud
 
 [source,bash]
 ----
-oc create -n demos \
-  -f tekton/pipelinerun-gcp.yaml
+tkn pipeline start spoke-deploy-cluster \
+    --param=cluster-name=my-dev \
+    --param git-url=https://github.com/kameshsampath/spoke-pipelines \
+    --param git-revision=wip \
+    --workspace name=extra-vars,secret=<subsitute the generated secret name> \
+    --workspace name=git-source,claimName=spoke-source
 ----
 
 Wait :coffee for the cluster to be ready.

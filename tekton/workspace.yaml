@@ -6,7 +6,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  volumeMode: Filesystem
+  #volumeMode: Filesystem
   storageClassName: standard
   accessModes:
     - ReadWriteOnce

@@ -3,20 +3,23 @@ kind: PipelineRun
 metadata:
   generateName: spoke-deploy-cluster-
 spec:
+  serviceAccountName: pipeline
   pipelineRef:
     name: spoke-deploy-cluster
   workspaces:
-    - name: extra-vars
-      configMap:
-        name: extravars-gcp
-        items:
-          - key: extravars
-            path: extravars
     - name: git-source
       persistentVolumeClaim:
         claimName: spoke-source
+    - name: extra-vars
+      secret:
+        secretName: extravars-gcp
+        items:
+          - key: extravars
+            path: extravars
   params:
     - name: git-url
       value: https://github.com/kameshsampath/spoke-pipelines
     - name: git-revision
       value: wip
+    - name: cluster-name
+      value: my-dev

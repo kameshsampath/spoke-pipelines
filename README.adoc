@@ -92,8 +92,48 @@ The following example shows how to create one for Google Cloud:
 
 [source,bash]
 ----
-oc create secret generic
+oc create secret -n demos generic \
+  extravars-gcp \
+  --from-file=extravars=$PROJECT_HOME/env/extravars
 ----
 
-
 ==== Create Workspace
+
+The https://github.com/tektoncd/pipeline/blob/master/docs/workspaces.md[Tekton workspace] are shared across with each task.
+
+[source,bash]
+----
+oc apply -n demos -f tekton/workspace.yaml
+----
+
+==== Create Tasks
+
+The following tekton tasks are used in this demo:
+
+[source,bash]
+----
+oc apply -n demos \
+  -f tekton/ansible-runner-task.yaml
+----
+
+==== Create Tekton Pipeline 
+
+Create the Tekton Pipeline that will apply GitOps to create the clusters:
+
+[source,bash]
+----
+oc apply -n demos \
+  -f tekton/spoke-deploy-cluster.yaml
+----
+
+==== Run the sample pipeline
+
+Run the following sample pipeline to deploy the cluster to Google Cloud
+
+[source,bash]
+----
+oc create -n demos \
+  -f tekton/pipelinerun-gcp.yaml
+----
+
+Wait :coffee for the cluster to be ready.

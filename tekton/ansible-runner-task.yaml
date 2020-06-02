@@ -13,15 +13,10 @@ spec:
         #!/bin/sh
         cp -av $(workspaces.extravars.path)/extravars $(workspaces.source.path)/env/extravars
     - name: gen-spoke-resources
-      image: docker.io/ansible/ansible-runner:latest
-      command:
-        - ansible-runner
-      env:
-        - name: RUNNER_PLAYBOOK
-          value: generate-spoke-resources.yaml
-        - name: PROJECT_DIR
-          value: "$(workspaces.source.path)/project"
+      image: quay.io/kameshsampath/ansible-runner:latest
+      imagePullPolicy: Always
       args:
+        - ansible-runner
         - -p
         - generate-spoke-resources.yaml
         - run

@@ -6,6 +6,7 @@ spec:
   params:
     - name: git-url
     - name: git-revision
+    - name: cluster-name
   workspaces:
     - name: git-source
     - name: extra-vars
@@ -13,6 +14,7 @@ spec:
     - name: fetch-from-git
       taskRef:
         name: git-clone
+        kind: ClusterTask
       params:
         - name: url
           value: $(params.git-url)
@@ -34,3 +36,18 @@ spec:
           workspace: git-source
         - name: extravars
           workspace: extra-vars
+    - name: deploy-spoke-cluster
+      taskRef:
+        name: openshift-client
+        kind: ClusterTask
+      runAfter:
+        - generate-spoke-resources
+      workspaces:
+        - name: source
+          workspace: git-source
+      params:
+        - name: ARGS
+          value:
+            - "apply"
+            - "--kustomize"
+            - "$(workspaces.source.path)/gcp/$(params.cluster-name)/kustomization.yaml"

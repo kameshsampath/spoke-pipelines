@@ -11,7 +11,12 @@ spec:
       image: registry.access.redhat.com/ubi8/ubi-minimal
       script: |-
         #!/bin/sh
-        cp -av $(workspaces.extravars.path)/extravars $(workspaces.source.path)/env/extravars
+        cat $(workspaces.extravars.path)/extravars > $(workspaces.source.path)/env/extravars
+    - name: list-extravars
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |-
+        #!/bin/sh
+        cat $(workspaces.source.path)/env/extravars
     - name: gen-spoke-resources
       image: quay.io/kameshsampath/ansible-runner:latest
       imagePullPolicy: Always

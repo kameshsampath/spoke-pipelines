@@ -30,7 +30,7 @@ EOF
 
 oc -n advanced-cluster-management create secret docker-registry advanced-cluster-management-registry \
   --docker-server=registry.access.redhat.com/rhacm1-tech-preview \
-  --docker-username="$RH_REGISTRY_USER" --docker-password="$RH_REGISTRY_USER_PASS"
+  --docker-username="$RH_REGISTRY_USER" --docker-password="$RH_REGISTRY_USER_PASS" || true
 
 cat <<EOF | oc -n advanced-cluster-management apply -f -
 apiVersion: operators.open-cluster-management.io/v1beta1

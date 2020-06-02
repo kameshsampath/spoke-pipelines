@@ -1,9 +1,17 @@
-namespace: demos
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: demos-2
+
+configurations:
+  - namespace-config.yaml
+
 secretGenerator:
   - name: extravars
     files:
       - env/extravars
 resources:
+  - tekton/spoke-pipeline-admin-sa.yaml
   - tekton/workspace.yaml
   - tekton/ansible-runner-task.yaml
   - tekton/spoke-deploy-cluster.yaml

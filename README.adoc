@@ -11,6 +11,8 @@ Configure your cloud accounts as detailed in the following docs:
 
 * https://docs.openshift.com/container-platform/4.4/installing/installing_gcp/installing-gcp-account.html[Google]
 
+* Install Advanced Cluster Management(ACM) in  one of your clusters
+
 === Create Cloud Secrets
 
 [NOTE]
@@ -86,12 +88,13 @@ All the pipelines and its related resources will be deployed in this project, ru
 
 [source,bash]
 ----
-kubectl create namespace <your-namespace>
+export NAMESPACE=<your-namespace>
+kubectl create namespace $NAMESPACE
 ----
 
 [IMPORTANT]
 ====
-Update the kustomization.yaml **namespace** to match your namespace
+Update the kustomization.yaml **namespace** to match your namespace i.e. `$NAMESPACE`
 ====
 
 ==== Create PVC, Tasks, Pipelines and Cloud extravars secret
@@ -105,6 +108,16 @@ IMPORTANT: Please make the note of the name of the secret generated as it will b
 oc apply --kustomize $PWD
 ----
 
+==== Define cluster-admin Role Binding to `spoke-pipeline-admin`
+
+[source,bash]
+----
+oc create clusterrolebinding \
+  spoke-secrets-to-pipeline \
+  --clusterrole=cluster-admin \
+  --serviceaccount=$NAMESPACE:spoke-pipeline-admin
+----
+
 ==== Run the sample pipeline
 
 Run the following sample pipeline to deploy the cluster to Google Cloud
@@ -112,11 +125,13 @@ Run the following sample pipeline to deploy the cluster to Google Cloud
 [source,bash]
 ----
 tkn pipeline start spoke-deploy-cluster \
+    --serviceaccount=spoke-pipeline-admin \
     --param=cluster-name=my-dev \
     --param git-url=https://github.com/kameshsampath/spoke-pipelines \
     --param git-revision=wip \
-    --workspace name=extra-vars,secret=<subsitute the generated secret name> \
-    --workspace name=git-source,claimName=spoke-source
+    --workspace name=extra-vars,secret=<your secret name>,item=extravars=extravars \
+    --workspace name=git-source,claimName=spoke-source \
+    --showlog
 ----
 
 Wait :coffee for the cluster to be ready.

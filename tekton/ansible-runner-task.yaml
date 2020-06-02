@@ -26,3 +26,8 @@ spec:
         - generate-spoke-resources.yaml
         - run
         - "$(workspaces.source.path)"
+    - name: list-out
+      image: registry.access.redhat.com/ubi8/ubi-minimal
+      script: |-
+        #!/bin/sh
+        cat $(workspaces.extravars.path)/project/out/gcp/my-dev

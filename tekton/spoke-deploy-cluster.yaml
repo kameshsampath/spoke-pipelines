@@ -50,4 +50,5 @@ spec:
           value:
             - "apply"
             - "--kustomize"
-            - "$(workspaces.source.path)/gcp/$(params.cluster-name)/kustomization.yaml"
+            - "$(workspaces.source.path)/project/out/gcp/$(params.cluster-name)"
+            - "--dry-run"
